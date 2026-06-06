@@ -138,7 +138,7 @@ export function DensityTable({ countries }: DensityTableProps) {
                   <TableHead className="text-right font-semibold text-xs">
                     Population
                   </TableHead>
-                  <TableHead className="text-right font-semibold text-xs">
+                  <TableHead className="hidden text-right font-semibold text-xs sm:table-cell">
                     Land Area
                   </TableHead>
                   <TableHead className="text-right font-semibold text-xs">
@@ -181,7 +181,7 @@ export function DensityTable({ countries }: DensityTableProps) {
                       <TableCell className="text-right font-mono text-muted-foreground text-xs">
                         {c.population2026.toLocaleString()}
                       </TableCell>
-                      <TableCell className="text-right font-mono text-muted-foreground text-xs">
+                      <TableCell className="hidden text-right font-mono text-muted-foreground text-xs sm:table-cell">
                         {c.area.toLocaleString()} km²
                       </TableCell>
                       <TableCell className="text-right font-bold font-mono text-foreground text-xs">

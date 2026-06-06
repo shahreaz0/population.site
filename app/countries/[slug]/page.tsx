@@ -123,7 +123,7 @@ export default async function CountryDetailPage({ params }: PageProps) {
   return (
     <div className="container mx-auto flex flex-col gap-6 px-4 py-8">
       {/* Title Header */}
-      <div className="flex items-center gap-4 border-border/40 border-b pb-6">
+      <div className="flex flex-col items-start gap-3 border-border/40 border-b pb-6 sm:flex-row sm:items-center sm:gap-4">
         <span
           className="select-none text-5xl leading-none sm:text-6xl"
           role="img"
@@ -145,7 +145,7 @@ export default async function CountryDetailPage({ params }: PageProps) {
       <AdSenseBlock slot="country-top" format="horizontal" />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {statsItems.map((item) => {
           const Icon = item.icon
           return (

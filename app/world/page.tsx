@@ -127,13 +127,13 @@ export default async function WorldPopulationPage() {
                   <TableHead className="text-right font-semibold text-muted-foreground text-xs">
                     World Share
                   </TableHead>
-                  <TableHead className="text-right font-semibold text-muted-foreground text-xs">
+                  <TableHead className="hidden text-right font-semibold text-muted-foreground text-xs sm:table-cell">
                     Land Area
                   </TableHead>
-                  <TableHead className="text-right font-semibold text-muted-foreground text-xs">
+                  <TableHead className="hidden text-right font-semibold text-muted-foreground text-xs sm:table-cell">
                     Density
                   </TableHead>
-                  <TableHead className="text-right font-semibold text-muted-foreground text-xs">
+                  <TableHead className="hidden text-right font-semibold text-muted-foreground text-xs sm:table-cell">
                     Nations
                   </TableHead>
                 </TableRow>
@@ -158,13 +158,13 @@ export default async function WorldPopulationPage() {
                     <TableCell className="text-right font-mono text-xs">
                       {c.sharePercent.toFixed(2)}%
                     </TableCell>
-                    <TableCell className="text-right font-mono text-xs">
+                    <TableCell className="hidden text-right font-mono text-xs sm:table-cell">
                       {Math.round(c.area).toLocaleString()} km²
                     </TableCell>
-                    <TableCell className="text-right font-mono text-xs">
+                    <TableCell className="hidden text-right font-mono text-xs sm:table-cell">
                       {c.averageDensity.toFixed(1)} / km²
                     </TableCell>
-                    <TableCell className="text-right font-mono text-xs">
+                    <TableCell className="hidden text-right font-mono text-xs sm:table-cell">
                       {c.countriesCount}
                     </TableCell>
                   </TableRow>

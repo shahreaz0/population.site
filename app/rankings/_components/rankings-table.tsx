@@ -226,10 +226,10 @@ export function RankingsTable({ countries }: RankingsTableProps) {
                   Rank
                 </TableHead>
                 <TableHead className="font-semibold text-xs">Country</TableHead>
-                <TableHead className="font-semibold text-xs">
+                <TableHead className="hidden font-semibold text-xs md:table-cell">
                   Continent
                 </TableHead>
-                <TableHead className="text-right font-semibold text-xs">
+                <TableHead className="hidden text-right font-semibold text-xs sm:table-cell">
                   Land Area
                 </TableHead>
                 <TableHead className="text-right font-semibold text-xs">
@@ -263,11 +263,13 @@ export function RankingsTable({ countries }: RankingsTableProps) {
                         <span>{c.name}</span>
                       </Link>
                     </TableCell>
-                    <TableCell className="flex items-center gap-1 py-4 text-muted-foreground text-xs">
-                      <IconMap className="h-3 w-3 text-muted-foreground/60" />
-                      {c.continent}
+                    <TableCell className="hidden py-4 text-muted-foreground text-xs md:table-cell">
+                      <div className="flex items-center gap-1">
+                        <IconMap className="h-3 w-3 text-muted-foreground/60" />
+                        {c.continent}
+                      </div>
                     </TableCell>
-                    <TableCell className="text-right font-mono text-muted-foreground text-xs">
+                    <TableCell className="hidden text-right font-mono text-muted-foreground text-xs sm:table-cell">
                       {c.area.toLocaleString()} km²
                     </TableCell>
                     <TableCell className="text-right font-bold font-mono text-foreground text-xs">

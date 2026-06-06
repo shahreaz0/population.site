@@ -27,7 +27,7 @@ export default function ContactPage() {
         {/* Contact form card */}
         <Card className="border border-border/40 bg-card/50 p-6 backdrop-blur-sm">
           <form className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <label
                   htmlFor="contact-name"

@@ -6,12 +6,13 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox"
 
 interface CompareWidgetProps {
   countries: { name: string; slug: string; flag: string }[]
@@ -30,7 +31,7 @@ export function CompareWidget({ countries }: CompareWidgetProps) {
 
   return (
     <section className="container mx-auto px-4 py-12">
-      <Card className="rounded-none border border-border/40 bg-radial from-primary/[0.02] via-card to-card p-6 shadow-sm md:p-8">
+      <Card className="rounded-none border border-border/40 bg-radial from-primary/2 via-card to-card p-6 shadow-sm md:p-8">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-3">
           <div className="flex flex-col gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-none border border-primary/20 bg-primary/10 text-primary">
@@ -55,34 +56,42 @@ export function CompareWidget({ countries }: CompareWidgetProps) {
               >
                 First Country
               </label>
-              <Select
-                value={countryA}
-                onValueChange={(val) => setCountryA(val || "")}
+              <Combobox<CompareWidgetProps["countries"][number]>
+                items={countries}
+                itemToStringLabel={(country) =>
+                  country ? `${country.name} ${country.flag}` : ""
+                }
+                itemToStringValue={(country) => country?.slug ?? ""}
+                isItemEqualToValue={(item, val) => item?.slug === val?.slug}
+                value={countries.find((c) => c.slug === countryA) || null}
+                onValueChange={(val) => setCountryA(val?.slug ?? "")}
               >
-                <SelectTrigger
+                <ComboboxInput
                   id="compare-select-a"
-                  className="flex h-11 w-full items-center justify-between rounded-none border border-input bg-background text-sm focus:ring-1 focus:ring-primary"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent
+                  placeholder="Search first country..."
+                  className="h-11 w-full bg-background font-bold font-mono text-sm"
+                />
+                <ComboboxContent
                   align="start"
                   className="max-h-60 overflow-y-auto rounded-none border border-border bg-popover text-popover-foreground"
                 >
-                  {countries.map((c) => (
-                    <SelectItem
-                      key={`a-${c.slug}`}
-                      value={c.slug}
-                      className="rounded-none"
-                    >
-                      <span className="mr-2 text-base leading-none">
-                        {c.flag}
-                      </span>
-                      <span>{c.name}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                  <ComboboxEmpty>No countries found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(c) => (
+                      <ComboboxItem
+                        key={`a-${c.slug}`}
+                        value={c}
+                        className="rounded-none"
+                      >
+                        <span className="mr-2 text-base leading-none">
+                          {c.flag}
+                        </span>
+                        <span>{c.name}</span>
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
             </div>
 
             <div className="select-none py-2 font-semibold text-muted-foreground/60 text-sm sm:py-0">
@@ -97,34 +106,42 @@ export function CompareWidget({ countries }: CompareWidgetProps) {
               >
                 Second Country
               </label>
-              <Select
-                value={countryB}
-                onValueChange={(val) => setCountryB(val || "")}
+              <Combobox<CompareWidgetProps["countries"][number]>
+                items={countries}
+                itemToStringLabel={(country) =>
+                  country ? `${country.name} ${country.flag}` : ""
+                }
+                itemToStringValue={(country) => country?.slug ?? ""}
+                isItemEqualToValue={(item, val) => item?.slug === val?.slug}
+                value={countries.find((c) => c.slug === countryB) || null}
+                onValueChange={(val) => setCountryB(val?.slug ?? "")}
               >
-                <SelectTrigger
+                <ComboboxInput
                   id="compare-select-b"
-                  className="flex h-11 w-full items-center justify-between rounded-none border border-input bg-background text-sm focus:ring-1 focus:ring-primary"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent
+                  placeholder="Search second country..."
+                  className="h-11 w-full bg-background font-bold font-mono text-sm"
+                />
+                <ComboboxContent
                   align="start"
                   className="max-h-60 overflow-y-auto rounded-none border border-border bg-popover text-popover-foreground"
                 >
-                  {countries.map((c) => (
-                    <SelectItem
-                      key={`b-${c.slug}`}
-                      value={c.slug}
-                      className="rounded-none"
-                    >
-                      <span className="mr-2 text-base leading-none">
-                        {c.flag}
-                      </span>
-                      <span>{c.name}</span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                  <ComboboxEmpty>No countries found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(c) => (
+                      <ComboboxItem
+                        key={`b-${c.slug}`}
+                        value={c}
+                        className="rounded-none"
+                      >
+                        <span className="mr-2 text-base leading-none">
+                          {c.flag}
+                        </span>
+                        <span>{c.name}</span>
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
             </div>
 
             <Button

@@ -8,12 +8,13 @@ import * as React from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox"
 import {
   Table,
   TableBody,
@@ -33,8 +34,8 @@ interface ComparisonViewerProps {
 export function ComparisonViewer({ countries }: ComparisonViewerProps) {
   const comparisonSearchParams = React.useMemo(
     () => ({
-      countryA: parseAsString.withDefault("india"),
-      countryB: parseAsString.withDefault("united-states"),
+      countryA: parseAsString.withDefault(""),
+      countryB: parseAsString.withDefault(""),
     }),
     []
   )
@@ -173,30 +174,38 @@ export function ComparisonViewer({ countries }: ComparisonViewerProps) {
             >
               Country A
             </label>
-            <Select
-              value={params.countryA}
-              onValueChange={(val) => setParams({ countryA: val || "india" })}
+            <Combobox<CountryData>
+              items={countries}
+              itemToStringLabel={(country) =>
+                country ? `${country.name} ${country.flag}` : ""
+              }
+              itemToStringValue={(country) => country?.slug ?? ""}
+              isItemEqualToValue={(item, val) => item?.slug === val?.slug}
+              value={countries.find((c) => c.slug === params.countryA) || null}
+              onValueChange={(val) => setParams({ countryA: val?.slug ?? "" })}
             >
-              <SelectTrigger
+              <ComboboxInput
                 id="compare-viewer-select-a"
-                className="flex h-11 w-full items-center justify-between rounded-none border border-input bg-background text-sm focus:ring-1 focus:ring-primary"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent
+                placeholder="Search country A..."
+                className="h-11 w-full bg-background text-sm"
+              />
+              <ComboboxContent
                 align="start"
                 className="max-h-60 overflow-y-auto border border-border bg-popover text-popover-foreground"
               >
-                {countries.map((c) => (
-                  <SelectItem key={`optA-${c.slug}`} value={c.slug}>
-                    <span className="mr-2 text-base leading-none">
-                      {c.flag}
-                    </span>
-                    <span>{c.name}</span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                <ComboboxEmpty>No countries found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(c) => (
+                    <ComboboxItem key={`optA-${c.slug}`} value={c}>
+                      <span className="mr-2 text-base leading-none">
+                        {c.flag}
+                      </span>
+                      <span>{c.name}</span>
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
           </div>
 
           <div className="mt-4 select-none self-center py-1 font-semibold text-muted-foreground/60 text-sm sm:mt-5 sm:py-0">
@@ -210,32 +219,38 @@ export function ComparisonViewer({ countries }: ComparisonViewerProps) {
             >
               Country B
             </label>
-            <Select
-              value={params.countryB}
-              onValueChange={(val) =>
-                setParams({ countryB: val || "united-states" })
+            <Combobox<CountryData>
+              items={countries}
+              itemToStringLabel={(country) =>
+                country ? `${country.name} ${country.flag}` : ""
               }
+              itemToStringValue={(country) => country?.slug ?? ""}
+              isItemEqualToValue={(item, val) => item?.slug === val?.slug}
+              value={countries.find((c) => c.slug === params.countryB) || null}
+              onValueChange={(val) => setParams({ countryB: val?.slug ?? "" })}
             >
-              <SelectTrigger
+              <ComboboxInput
                 id="compare-viewer-select-b"
-                className="flex h-11 w-full items-center justify-between rounded-none border border-input bg-background text-sm focus:ring-1 focus:ring-primary"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent
+                placeholder="Search country B..."
+                className="h-11 w-full bg-background text-sm"
+              />
+              <ComboboxContent
                 align="start"
                 className="max-h-60 overflow-y-auto border border-border bg-popover text-popover-foreground"
               >
-                {countries.map((c) => (
-                  <SelectItem key={`optB-${c.slug}`} value={c.slug}>
-                    <span className="mr-2 text-base leading-none">
-                      {c.flag}
-                    </span>
-                    <span>{c.name}</span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                <ComboboxEmpty>No countries found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(c) => (
+                    <ComboboxItem key={`optB-${c.slug}`} value={c}>
+                      <span className="mr-2 text-base leading-none">
+                        {c.flag}
+                      </span>
+                      <span>{c.name}</span>
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
           </div>
         </div>
       </Card>

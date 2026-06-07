@@ -2,6 +2,7 @@ import { Geist_Mono, Inter } from "next/font/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 import "./globals.css"
+import { BottomNav } from "@/components/bottom-nav"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { SearchDialog } from "@/components/search-dialog"
@@ -36,9 +37,10 @@ export default function RootLayout({
           <NuqsAdapter>
             <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/20">
               <Header />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 pb-16 md:pb-0">{children}</main>
               <Footer />
               <SearchDialog />
+              <BottomNav />
             </div>
           </NuqsAdapter>
         </ThemeProvider>

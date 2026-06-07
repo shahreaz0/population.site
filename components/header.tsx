@@ -80,7 +80,7 @@ export function Header() {
           <div className="rounded-none border border-primary/20 bg-primary/10 p-2 text-primary transition-all duration-200 group-hover:bg-primary/20">
             <IconGlobe className="h-5 w-5 animate-pulse" />
           </div>
-          <span className="bg-gradient-to-r from-primary to-emerald-500 bg-clip-text font-bold text-lg text-transparent tracking-tight">
+          <span className="bg-linear-to-r from-primary to-emerald-500 bg-clip-text font-bold text-lg text-transparent tracking-tight">
             Population.site
           </span>
         </Link>
@@ -205,7 +205,7 @@ export function Header() {
               }
             />
             <SheetContent side="right" className="w-72 sm:w-80">
-              <SheetTitle className="mb-6 bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-left font-bold text-lg text-transparent">
+              <SheetTitle className="mb-6 bg-linear-to-r from-primary to-emerald-500 bg-clip-text text-left font-bold text-lg text-transparent">
                 Population.site
               </SheetTitle>
               <div className="mt-6 flex flex-col gap-4">
@@ -228,7 +228,7 @@ export function Header() {
                   Popular Countries
                 </div>
                 <div className="grid max-h-[200px] grid-cols-2 gap-2 overflow-y-auto rounded-none border border-border/20 bg-muted/20 p-2">
-                  {dropdownCountries.slice(0, 8).map((c) => (
+                  {dropdownCountries.map((c) => (
                     <Link
                       key={c.href}
                       href={c.href}
@@ -248,6 +248,24 @@ export function Header() {
                 >
                   View All Countries
                 </Link>
+
+                <div className="mt-4 flex items-center justify-center gap-4 text-muted-foreground text-xs">
+                  <Link
+                    href="/about"
+                    onClick={() => setMobileOpen(false)}
+                    className="hover:text-foreground hover:underline"
+                  >
+                    About
+                  </Link>
+                  <span>•</span>
+                  <Link
+                    href="/contact"
+                    onClick={() => setMobileOpen(false)}
+                    className="hover:text-foreground hover:underline"
+                  >
+                    Contact
+                  </Link>
+                </div>
               </div>
             </SheetContent>
           </Sheet>

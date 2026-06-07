@@ -60,7 +60,9 @@ function CommandDialog({
         )}
         showCloseButton={showCloseButton}
       >
-        {children}
+        <Command className="[&_[data-slot=command-input-wrapper]_svg]:size-5 **:data-[slot=input-group]:h-12 **:data-[slot=input-group-control]:h-12 **:data-[slot=command-item]:px-3 **:data-[slot=command-item]:py-2 [&_[data-slot=command-item]_svg]:size-5">
+          {children}
+        </Command>
       </DialogContent>
     </Dialog>
   )
@@ -74,9 +76,9 @@ function CommandInput({
     <div data-slot="command-input-wrapper" className="border-b pb-0">
       <InputGroup className="h-8 border-none border-input/30 bg-input/30 shadow-none! *:data-[slot=input-group-addon]:pl-2!">
         <CommandPrimitive.Input
-          data-slot="command-input"
+          data-slot="input-group-control"
           className={cn(
-            "w-full text-xs outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+            "flex-1 bg-transparent border-0 px-2.5 text-xs outline-hidden focus:ring-0 focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50 h-full",
             className
           )}
           {...props}
@@ -162,7 +164,7 @@ function CommandItem({
       {...props}
     >
       {children}
-      <IconCheck className="ml-auto opacity-0 group-has-data-[slot=command-shortcut]/command-item:hidden group-data-[checked=true]/command-item:opacity-100" />
+      <IconCheck className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-has-data-[slot=command-shortcut]/command-item:hidden group-data-[checked=true]/command-item:opacity-100" />
     </CommandPrimitive.Item>
   )
 }

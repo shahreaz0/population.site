@@ -1,5 +1,6 @@
 import { IconAlertTriangle } from "@tabler/icons-react"
 import type { Metadata } from "next"
+import { AdSenseBlock } from "@/components/adsense-block"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
@@ -60,6 +61,8 @@ export default function DisclaimerPage() {
           </p>
         </CardContent>
       </Card>
+
+      <AdSenseBlock slot="disclaimer-bottom" format="horizontal" />
     </div>
   )
 }

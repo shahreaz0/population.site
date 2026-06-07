@@ -1,4 +1,5 @@
 import { AdSenseBlock } from "@/components/adsense-block"
+import { SEOLinksGrid } from "@/components/seo-links-grid"
 import { getAllCountries } from "@/lib/data/countries"
 import { CompareWidget } from "./_components/compare-widget"
 import { ContinentGrid } from "./_components/continent-grid"
@@ -43,7 +44,10 @@ export default async function Home() {
       {/* 9. Country Comparison Tool */}
       <CompareWidget countries={selectorCountries} />
 
-      {/* 10. Educational Content Section */}
+      {/* 10. Demographic Directories & SEO Rankings Links */}
+      <SEOLinksGrid />
+
+      {/* 11. Educational Content Section */}
       <EducationalFAQ />
     </div>
   )

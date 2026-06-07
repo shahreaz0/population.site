@@ -1,5 +1,6 @@
 import { IconCode, IconDatabase, IconGlobe } from "@tabler/icons-react"
 import type { Metadata } from "next"
+import { AdSenseBlock } from "@/components/adsense-block"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
@@ -99,6 +100,8 @@ export default function AboutPage() {
           </p>
         </CardContent>
       </Card>
+
+      <AdSenseBlock slot="about-bottom" format="horizontal" />
     </div>
   )
 }

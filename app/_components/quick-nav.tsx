@@ -15,16 +15,25 @@ import {
 export function QuickNavigation() {
   const items = [
     {
+      title: "Most Populated Countries",
+      description:
+        "Access the complete alphabetical directory of countries to search individual demographic statistics.",
+      href: "/countries",
+      icon: IconDirections,
+      color:
+        "from-purple-500/10 to-pink-500/10 text-purple-500 hover:border-purple-500/30",
+    },
+    {
       title: "Population Rankings",
       description:
-        "Filter and sort the world's nations by total population and demographic shares.",
+        "Filter, search, and sort the world's nations by total population and demographic shares.",
       href: "/rankings?sortBy=population",
       icon: IconListNumbers,
       color:
         "from-blue-500/10 to-indigo-500/10 text-indigo-500 hover:border-indigo-500/30",
     },
     {
-      title: "Population Density",
+      title: "Population Density Rankings",
       description:
         "Discover land-to-population ratios, highlighting high-density and low-density zones.",
       href: "/density",
@@ -33,22 +42,13 @@ export function QuickNavigation() {
         "from-emerald-500/10 to-teal-500/10 text-emerald-500 hover:border-emerald-500/30",
     },
     {
-      title: "Compare Countries",
+      title: "Country Comparisons",
       description:
         "Compare population growth, birth rates, death rates, and age metrics side-by-side.",
       href: "/compare",
       icon: IconGitCompare,
       color:
         "from-amber-500/10 to-orange-500/10 text-amber-500 hover:border-amber-500/30",
-    },
-    {
-      title: "Continent Analysis",
-      description:
-        "Analyze continent population metrics, shares of world total, and growth rates.",
-      href: "/continents",
-      icon: IconDirections,
-      color:
-        "from-purple-500/10 to-pink-500/10 text-purple-500 hover:border-purple-500/30",
     },
   ]
 

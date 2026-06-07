@@ -1,5 +1,6 @@
 import { IconMail, IconMapPin } from "@tabler/icons-react"
 import type { Metadata } from "next"
+import { AdSenseBlock } from "@/components/adsense-block"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -112,6 +113,8 @@ export default function ContactPage() {
             <span>San Francisco, CA, USA</span>
           </div>
         </div>
+
+        <AdSenseBlock slot="contact-bottom" format="horizontal" />
       </div>
     </div>
   )

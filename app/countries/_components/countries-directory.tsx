@@ -2,22 +2,62 @@
 
 import { IconChevronRight, IconSearch } from "@tabler/icons-react"
 import Link from "next/link"
-import { useQueryState } from "nuqs"
+import { parseAsString, useQueryStates } from "nuqs"
+
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import type { CountryData } from "@/lib/data/countries"
+import { cn } from "@/lib/utils"
 
 interface CountriesDirectoryProps {
   countries: CountryData[]
 }
 
 export function CountriesDirectory({ countries }: CountriesDirectoryProps) {
-  const [search, setSearch] = useQueryState("search", { defaultValue: "" })
-  const [activeLetter, setActiveLetter] = useQueryState("letter", {
-    defaultValue: "all",
+  const directorySearchParams = React.useMemo(
+    () => ({
+      search: parseAsString.withDefault(""),
+      letter: parseAsString.withDefault("all"),
+    }),
+    []
+  )
+
+  const [isPending, startTransition] = React.useTransition()
+
+  const [params, setParams] = useQueryStates(directorySearchParams, {
+    startTransition,
+    shallow: false,
   })
+
+  const [search, setSearch] = React.useState(params.search)
+
+  // Sync local search input value when URL changes externally
+  React.useEffect(() => {
+    setSearch(params.search)
+  }, [params.search])
+
+  const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+    debounceTimeoutRef.current = setTimeout(() => {
+      setParams({ search: value })
+    }, 300)
+  }
+
+  // Clear timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")
 
@@ -31,10 +71,11 @@ export function CountriesDirectory({ countries }: CountriesDirectoryProps) {
     return sortedCountries.filter((c) => {
       const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase())
       const matchesLetter =
-        activeLetter === "all" || c.name.toUpperCase().startsWith(activeLetter)
+        params.letter === "all" ||
+        c.name.toUpperCase().startsWith(params.letter)
       return matchesSearch && matchesLetter
     })
-  }, [sortedCountries, search, activeLetter])
+  }, [sortedCountries, search, params.letter])
 
   return (
     <div className="flex flex-col gap-6">
@@ -45,7 +86,7 @@ export function CountriesDirectory({ countries }: CountriesDirectoryProps) {
             type="text"
             placeholder="Filter countries by name..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="h-10 border-input/60 pl-9"
           />
           <IconSearch className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -56,9 +97,9 @@ export function CountriesDirectory({ countries }: CountriesDirectoryProps) {
         {/* Alphabet Index */}
         <div className="flex flex-wrap items-center gap-1.5">
           <Button
-            variant={activeLetter === "all" ? "default" : "outline"}
+            variant={params.letter === "all" ? "default" : "outline"}
             size="sm"
-            onClick={() => setActiveLetter("all")}
+            onClick={() => setParams({ letter: "all" })}
             className="h-8 px-3 font-semibold text-xs"
           >
             All
@@ -71,10 +112,10 @@ export function CountriesDirectory({ countries }: CountriesDirectoryProps) {
             return (
               <Button
                 key={letter}
-                variant={activeLetter === letter ? "default" : "outline"}
+                variant={params.letter === letter ? "default" : "outline"}
                 size="sm"
                 disabled={!hasCountries}
-                onClick={() => setActiveLetter(letter)}
+                onClick={() => setParams({ letter: letter })}
                 className="h-8 w-8 p-0 font-semibold text-xs"
               >
                 {letter}
@@ -85,10 +126,18 @@ export function CountriesDirectory({ countries }: CountriesDirectoryProps) {
       </Card>
 
       {/* Directory Grid */}
-      <Card className="border border-border/40 bg-card/50 backdrop-blur-sm">
+      <Card
+        className={cn(
+          "border border-border/40 bg-card/50 backdrop-blur-sm transition-opacity duration-300",
+          isPending && "opacity-75"
+        )}
+      >
         <CardHeader className="border-border/40 border-b p-5">
-          <CardTitle className="font-bold text-muted-foreground text-sm uppercase tracking-tight">
+          <CardTitle className="flex items-center gap-2 font-bold text-muted-foreground text-sm uppercase tracking-tight">
             A - Z Directory Listing ({filtered.length} countries)
+            {isPending && (
+              <span className="ml-2 h-3.5 w-3.5 animate-spin rounded-full border border-primary border-t-transparent" />
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">

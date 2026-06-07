@@ -1,5 +1,6 @@
 import { IconShieldCheck } from "@tabler/icons-react"
 import type { Metadata } from "next"
+import { AdSenseBlock } from "@/components/adsense-block"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
@@ -75,6 +76,8 @@ export default function PrivacyPage() {
           </p>
         </CardContent>
       </Card>
+
+      <AdSenseBlock slot="privacy-bottom" format="horizontal" />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { AdSenseBlock } from "@/components/adsense-block"
+import { SEOLinksGrid } from "@/components/seo-links-grid"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -174,6 +175,9 @@ export default async function WorldPopulationPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Dynamic SEO Directories */}
+      <SEOLinksGrid />
 
       {/* Bottom AdSense slot */}
       <AdSenseBlock slot="world-bottom" format="horizontal" />

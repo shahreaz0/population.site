@@ -2,7 +2,8 @@
 
 import { IconChevronRight, IconGitCompare } from "@tabler/icons-react"
 import Link from "next/link"
-import { useQueryState } from "nuqs"
+import { parseAsString, useQueryStates } from "nuqs"
+
 import * as React from "react"
 import { buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,29 +31,36 @@ interface ComparisonViewerProps {
 }
 
 export function ComparisonViewer({ countries }: ComparisonViewerProps) {
-  // Bind country slugs to query parameters
-  const [countryAVal, setCountryAVal] = useQueryState("countryA", {
-    defaultValue: "india",
-  })
-  const [countryBVal, setCountryBVal] = useQueryState("countryB", {
-    defaultValue: "united-states",
+  const comparisonSearchParams = React.useMemo(
+    () => ({
+      countryA: parseAsString.withDefault("india"),
+      countryB: parseAsString.withDefault("united-states"),
+    }),
+    []
+  )
+
+  const [isPending, startTransition] = React.useTransition()
+
+  const [params, setParams] = useQueryStates(comparisonSearchParams, {
+    startTransition,
+    shallow: false,
   })
 
   const countryA = React.useMemo(() => {
     return (
-      countries.find((c) => c.slug === countryAVal) ||
+      countries.find((c) => c.slug === params.countryA) ||
       countries.find((c) => c.slug === "india") ||
       countries[0]
     )
-  }, [countries, countryAVal])
+  }, [countries, params.countryA])
 
   const countryB = React.useMemo(() => {
     return (
-      countries.find((c) => c.slug === countryBVal) ||
+      countries.find((c) => c.slug === params.countryB) ||
       countries.find((c) => c.slug === "united-states") ||
       countries[1]
     )
-  }, [countries, countryBVal])
+  }, [countries, params.countryB])
 
   // Align historical data points
   const chartData = React.useMemo(() => {
@@ -151,7 +159,12 @@ export function ComparisonViewer({ countries }: ComparisonViewerProps) {
   return (
     <div className="flex w-full flex-col gap-6">
       {/* Selectors Card */}
-      <Card className="border border-border/40 bg-card/50 p-5 backdrop-blur-sm">
+      <Card
+        className={cn(
+          "border border-border/40 bg-card/50 p-5 backdrop-blur-sm transition-opacity duration-300",
+          isPending && "opacity-75"
+        )}
+      >
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           <div className="flex w-full flex-col gap-1.5">
             <label
@@ -161,8 +174,8 @@ export function ComparisonViewer({ countries }: ComparisonViewerProps) {
               Country A
             </label>
             <Select
-              value={countryAVal}
-              onValueChange={(val) => setCountryAVal(val)}
+              value={params.countryA}
+              onValueChange={(val) => setParams({ countryA: val || "india" })}
             >
               <SelectTrigger
                 id="compare-viewer-select-a"
@@ -198,8 +211,10 @@ export function ComparisonViewer({ countries }: ComparisonViewerProps) {
               Country B
             </label>
             <Select
-              value={countryBVal}
-              onValueChange={(val) => setCountryBVal(val)}
+              value={params.countryB}
+              onValueChange={(val) =>
+                setParams({ countryB: val || "united-states" })
+              }
             >
               <SelectTrigger
                 id="compare-viewer-select-b"

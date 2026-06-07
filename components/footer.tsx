@@ -19,16 +19,16 @@ export function Footer() {
     {
       title: "Rankings",
       links: [
-        { name: "Population Rankings", href: "/rankings?sortBy=population" },
-        { name: "Density Rankings", href: "/density" },
-        { name: "Growth Rankings", href: "/rankings?sortBy=growth" },
+        { name: "Population Rankings", href: "/countries-by-population" },
+        { name: "Density Rankings", href: "/population-density-by-country" },
+        { name: "Growth Rankings", href: "/population-growth-rate-by-country" },
       ],
     },
     {
       title: "Resources",
       links: [
-        { name: "World Population", href: "/world" },
-        { name: "Population by Continent", href: "/continents" },
+        { name: "World Population", href: "/world-population" },
+        { name: "Population by Continent", href: "/population-by-continent" },
         { name: "Population Statistics", href: "/rankings" },
         { name: "Population API", href: "/about#api" },
       ],

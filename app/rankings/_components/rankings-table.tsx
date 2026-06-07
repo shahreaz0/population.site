@@ -8,7 +8,6 @@ import {
   IconSearch,
 } from "@tabler/icons-react"
 import Link from "next/link"
-import { useQueryState } from "nuqs"
 import * as React from "react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,47 +22,81 @@ import {
 } from "@/components/ui/table"
 import type { CountryData } from "@/lib/data/countries"
 import { cn } from "@/lib/utils"
+import { useRankingsSearchParams } from "./search-params"
 
 interface RankingsTableProps {
   countries: CountryData[]
+  defaultSort?: string
+  filterLosingOnly?: boolean
 }
 
-export function RankingsTable({ countries }: RankingsTableProps) {
-  // nuqs url state bindings
-  const [sortBy, setSortBy] = useQueryState("sortBy", {
-    defaultValue: "population",
-  })
-  const [continent, setContinent] = useQueryState("continent", {
-    defaultValue: "all",
-  })
-  const [search, setSearch] = useQueryState("search", { defaultValue: "" })
+const continents = [
+  "All",
+  "Asia",
+  "Africa",
+  "Europe",
+  "North America",
+  "South America",
+  "Oceania",
+]
+const sortCategories = [
+  { value: "population", label: "Population" },
+  { value: "density", label: "Density" },
+  { value: "growth", label: "Growth Rate" },
+  { value: "birth", label: "Birth Rate" },
+  { value: "death", label: "Death Rate" },
+  { value: "age", label: "Median Age" },
+  { value: "urban", label: "Urban Ratio" },
+  { value: "rural", label: "Rural Ratio" },
+]
+
+export function RankingsTable({
+  countries,
+  defaultSort,
+  filterLosingOnly = false,
+}: RankingsTableProps) {
+  const {
+    rankingsSearchParams: params,
+    setRankingsSearchParams: setParams,
+    isLoading: isPending,
+  } = useRankingsSearchParams(defaultSort)
+
+  const [search, setSearch] = React.useState(params.search)
+
+  // Sync local search input value when URL changes externally
+  React.useEffect(() => {
+    setSearch(params.search)
+  }, [params.search])
+
+  const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+    debounceTimeoutRef.current = setTimeout(() => {
+      setParams({ search: value })
+    }, 300)
+  }
+
+  // Clear timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const [currentPage, setCurrentPage] = React.useState(1)
   const itemsPerPage = 25
 
   // Reset pagination on filter change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Reset pagination when filters change
   React.useEffect(() => {
     setCurrentPage(1)
-  }, [])
-
-  const continents = [
-    "All",
-    "Asia",
-    "Africa",
-    "Europe",
-    "North America",
-    "South America",
-    "Oceania",
-  ]
-  const sortCategories = [
-    { value: "population", label: "Population" },
-    { value: "density", label: "Density" },
-    { value: "growth", label: "Growth Rate" },
-    { value: "birth", label: "Birth Rate" },
-    { value: "death", label: "Death Rate" },
-    { value: "age", label: "Median Age" },
-    { value: "urban", label: "Urban Ratio" },
-  ]
+  }, [search, params.continent, params.sortBy])
 
   // Filtering
   const filtered = React.useMemo(() => {
@@ -74,44 +107,55 @@ export function RankingsTable({ countries }: RankingsTableProps) {
         c.capital.toLowerCase().includes(search.toLowerCase())
 
       const matchesContinent =
-        continent === "all" ||
-        c.continent.toLowerCase() === continent.toLowerCase().replace("-", " ")
+        params.continent === "all" ||
+        c.continent.toLowerCase() ===
+          params.continent.toLowerCase().replace("-", " ")
 
-      return matchesSearch && matchesContinent
+      const matchesLosing = !filterLosingOnly || c.growthRate < 0
+
+      return matchesSearch && matchesContinent && matchesLosing
     })
-  }, [countries, search, continent])
+  }, [countries, search, params.continent, filterLosingOnly])
 
   // Sorting
   const sorted = React.useMemo(() => {
     const data = [...filtered]
     data.sort((a, b) => {
-      if (sortBy === "population") {
+      if (params.sortBy === "population") {
         return b.population2026 - a.population2026
       }
-      if (sortBy === "density") {
+      if (params.sortBy === "density") {
         const densA = a.population2026 / a.area
         const densB = b.population2026 / b.area
         return densB - densA
       }
-      if (sortBy === "growth") {
+      if (params.sortBy === "growth") {
+        if (filterLosingOnly) {
+          return a.growthRate - b.growthRate // fastest declining at top
+        }
         return b.growthRate - a.growthRate
       }
-      if (sortBy === "birth") {
+      if (params.sortBy === "birth") {
         return b.birthRate - a.birthRate
       }
-      if (sortBy === "death") {
+      if (params.sortBy === "death") {
         return b.deathRate - a.deathRate
       }
-      if (sortBy === "age") {
+      if (params.sortBy === "age") {
         return b.medianAge - a.medianAge
       }
-      if (sortBy === "urban") {
+      if (params.sortBy === "urban") {
         return b.urbanPopulationPercent - a.urbanPopulationPercent
+      }
+      if (params.sortBy === "rural") {
+        const ruralA = 100 - a.urbanPopulationPercent
+        const ruralB = 100 - b.urbanPopulationPercent
+        return ruralB - ruralA
       }
       return 0
     })
     return data
-  }, [filtered, sortBy])
+  }, [filtered, params.sortBy, filterLosingOnly])
 
   // Pagination slicing
   const paginated = React.useMemo(() => {
@@ -128,15 +172,17 @@ export function RankingsTable({ countries }: RankingsTableProps) {
   }
 
   const getDisplayValue = (c: CountryData) => {
-    if (sortBy === "population") return c.population2026.toLocaleString()
-    if (sortBy === "density")
+    if (params.sortBy === "population") return c.population2026.toLocaleString()
+    if (params.sortBy === "density")
       return `${Math.round(c.population2026 / c.area).toLocaleString()} / km²`
-    if (sortBy === "growth")
+    if (params.sortBy === "growth")
       return `${c.growthRate > 0 ? "+" : ""}${c.growthRate.toFixed(2)}%`
-    if (sortBy === "birth") return `${c.birthRate.toFixed(1)} / 1k`
-    if (sortBy === "death") return `${c.deathRate.toFixed(1)} / 1k`
-    if (sortBy === "age") return `${c.medianAge.toFixed(1)} yrs`
-    if (sortBy === "urban") return `${c.urbanPopulationPercent}%`
+    if (params.sortBy === "birth") return `${c.birthRate.toFixed(1)} / 1k`
+    if (params.sortBy === "death") return `${c.deathRate.toFixed(1)} / 1k`
+    if (params.sortBy === "age") return `${c.medianAge.toFixed(1)} yrs`
+    if (params.sortBy === "urban") return `${c.urbanPopulationPercent}%`
+    if (params.sortBy === "rural")
+      return `${(100 - c.urbanPopulationPercent).toFixed(1)}%`
     return ""
   }
 
@@ -151,7 +197,7 @@ export function RankingsTable({ countries }: RankingsTableProps) {
               type="text"
               placeholder="Search by country or capital..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="h-10 border-input/60 pl-9"
             />
             <IconSearch className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -168,9 +214,9 @@ export function RankingsTable({ countries }: RankingsTableProps) {
                 return (
                   <Button
                     key={cont}
-                    variant={continent === param ? "default" : "outline"}
+                    variant={params.continent === param ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setContinent(param)}
+                    onClick={() => setParams({ continent: param })}
                     className="h-8 text-xs"
                   >
                     {cont}
@@ -191,13 +237,13 @@ export function RankingsTable({ countries }: RankingsTableProps) {
             {sortCategories.map((cat) => (
               <Button
                 key={cat.value}
-                variant={sortBy === cat.value ? "default" : "outline"}
+                variant={params.sortBy === cat.value ? "default" : "outline"}
                 size="sm"
-                onClick={() => setSortBy(cat.value)}
+                onClick={() => setParams({ sortBy: cat.value })}
                 className="flex h-8 items-center gap-1 text-xs"
               >
                 {cat.label}
-                {sortBy === cat.value && (
+                {params.sortBy === cat.value && (
                   <IconArrowsUpDown className="h-3.5 w-3.5" />
                 )}
               </Button>
@@ -207,15 +253,25 @@ export function RankingsTable({ countries }: RankingsTableProps) {
       </Card>
 
       {/* Results Table Card */}
-      <Card className="border border-border/40 bg-card/50 backdrop-blur-sm">
+      <Card
+        className={cn(
+          "border border-border/40 bg-card/50 backdrop-blur-sm transition-opacity duration-300",
+          isPending && "opacity-75"
+        )}
+      >
         <CardHeader className="flex flex-row items-center justify-between border-border/40 border-b p-5">
           <CardTitle className="flex items-center gap-1.5 font-bold text-muted-foreground text-sm uppercase tracking-tight">
             <IconGlobe className="h-4 w-4 text-primary" />
             Rankings Directory ({sorted.length} countries found)
+            {isPending && (
+              <span className="ml-2 h-3.5 w-3.5 animate-spin rounded-full border border-primary border-t-transparent" />
+            )}
           </CardTitle>
           <span className="text-[10px] text-muted-foreground">
             Sorting by:{" "}
-            <strong className="text-foreground">{getSortLabel(sortBy)}</strong>
+            <strong className="text-foreground">
+              {getSortLabel(params.sortBy)}
+            </strong>
           </span>
         </CardHeader>
         <CardContent className="p-0">
@@ -233,7 +289,7 @@ export function RankingsTable({ countries }: RankingsTableProps) {
                   Land Area
                 </TableHead>
                 <TableHead className="text-right font-semibold text-xs">
-                  {getSortLabel(sortBy)}
+                  {getSortLabel(params.sortBy)}
                 </TableHead>
                 <TableHead className="w-10"></TableHead>
               </TableRow>

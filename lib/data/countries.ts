@@ -1,3 +1,4 @@
+import { STATIC_CITIES, type StaticCity } from "./static-cities"
 import { STATIC_COUNTRIES } from "./static-countries"
 
 export interface CountryData {
@@ -280,4 +281,9 @@ export async function generateAISummary(country: CountryData): Promise<string> {
       Historical data reveals a transformation since 1960, when the population was recorded at <strong>${pop1960.toLocaleString()}</strong>. Over these six decades, ${country.name} has experienced a <strong>${historicalIncrease}% increase</strong> in overall headcount. Currently, the society shows a median age of <strong>${country.medianAge} years</strong> and exhibits a <strong>${country.urbanPopulationPercent}% urbanization rate</strong>, meaning that a ${country.urbanPopulationPercent > 50 ? "majority" : "minority"} of residents dwell in major urban areas.
     </p>
   `.trim()
+}
+
+export async function getLargestCities(): Promise<StaticCity[]> {
+  // Return the top cities list sorted by population size descending
+  return [...STATIC_CITIES].sort((a, b) => b.population2026 - a.population2026)
 }

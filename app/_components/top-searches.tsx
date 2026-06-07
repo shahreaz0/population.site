@@ -28,7 +28,7 @@ export async function TopSearches() {
             className="flex items-center gap-2 rounded-none px-3 py-1.5 text-muted-foreground text-sm transition-all hover:bg-muted hover:font-medium hover:text-foreground"
           >
             <span className="text-base leading-none">{c.flag}</span>
-            <span>{c.name} Population</span>
+            <span>{c.name}</span>
           </Link>
         ))}
       </div>

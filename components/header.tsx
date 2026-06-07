@@ -148,6 +148,17 @@ export function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Search Icon */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={triggerGlobalSearch}
+            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            aria-label="Search countries"
+          >
+            <IconSearch className="h-4 w-4" />
+          </Button>
         </nav>
 
         {/* Action Buttons (Search, Theme, Mobile Toggle) */}

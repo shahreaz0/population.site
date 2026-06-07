@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { AdSenseBlock } from "@/components/adsense-block"
+import { SEOLinksGrid } from "@/components/seo-links-grid"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getAllCountries } from "@/lib/data/countries"
 import { RankingsTable } from "./_components/rankings-table"
@@ -42,6 +43,9 @@ export default async function RankingsPage() {
       >
         <RankingsTable countries={countries} />
       </Suspense>
+
+      {/* Dynamic SEO Directories */}
+      <SEOLinksGrid />
 
       {/* AdSense Block */}
       <AdSenseBlock slot="rankings-bottom" format="horizontal" />

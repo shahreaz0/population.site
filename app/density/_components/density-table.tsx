@@ -6,7 +6,8 @@ import {
   IconSearch,
 } from "@tabler/icons-react"
 import Link from "next/link"
-import { useQueryState } from "nuqs"
+import { parseAsString, useQueryStates } from "nuqs"
+
 import * as React from "react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,13 +29,56 @@ interface DensityTableProps {
 }
 
 export function DensityTable({ countries }: DensityTableProps) {
-  const [search, setSearch] = useQueryState("search", { defaultValue: "" })
+  const densitySearchParams = React.useMemo(
+    () => ({
+      search: parseAsString.withDefault(""),
+    }),
+    []
+  )
+
+  const [isPending, startTransition] = React.useTransition()
+
+  const [params, setParams] = useQueryStates(densitySearchParams, {
+    startTransition,
+    shallow: false,
+  })
+
+  const [search, setSearch] = React.useState(params.search)
+
+  // Sync local search input value when URL changes externally
+  React.useEffect(() => {
+    setSearch(params.search)
+  }, [params.search])
+
+  const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
+    }
+    debounceTimeoutRef.current = setTimeout(() => {
+      setParams({ search: value })
+    }, 300)
+  }
+
+  // Clear timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+    }
+  }, [])
+
   const [currentPage, setCurrentPage] = React.useState(1)
   const itemsPerPage = 25
 
+  // Reset pagination on search change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Reset pagination when search changes
   React.useEffect(() => {
     setCurrentPage(1)
-  }, [])
+  }, [search])
 
   // World average density is ~60 people per sq km
   const WORLD_AVERAGE_DENSITY = 60.1
@@ -104,7 +148,7 @@ export function DensityTable({ countries }: DensityTableProps) {
             type="text"
             placeholder="Search by country name..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="h-10 border-input/60 pl-9"
           />
           <IconSearch className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -112,12 +156,20 @@ export function DensityTable({ countries }: DensityTableProps) {
       </Card>
 
       {/* Density Rankings Card */}
-      <Card className="border border-border/40 bg-card/50 backdrop-blur-sm">
+      <Card
+        className={cn(
+          "border border-border/40 bg-card/50 backdrop-blur-sm transition-opacity duration-300",
+          isPending && "opacity-75"
+        )}
+      >
         <CardHeader className="flex flex-row items-center justify-between border-border/40 border-b p-5">
           <CardTitle className="flex items-center gap-2 font-bold text-muted-foreground text-sm uppercase tracking-tight">
             <IconChartScatter className="h-4 w-4 text-emerald-500" />
             Global Population Density Index ({sortedAndFiltered.length}{" "}
             countries)
+            {isPending && (
+              <span className="ml-2 h-3.5 w-3.5 animate-spin rounded-full border border-emerald-500 border-t-transparent" />
+            )}
           </CardTitle>
           <span className="text-[10px] text-muted-foreground">
             Global Average:{" "}

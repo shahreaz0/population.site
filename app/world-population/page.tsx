@@ -4,9 +4,9 @@ import WorldPage from "../world/page"
 export const revalidate = 86400 // Revalidate once per day (ISR)
 
 export const metadata: Metadata = {
-  title: "World Population 2026 - Live Counter & Statistics",
+  title: "World Population Clock 2026 — Live Tracker & Demographics",
   description:
-    "View the live world population counter, historical demographic charts, continent breakdowns, and core statistics on global population growth.",
+    "Track the real-time world population clock for 2026. View live growth statistics, birth and death rates, continent breakdowns, and historical trend data.",
 }
 
 export default WorldPage

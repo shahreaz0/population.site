@@ -19,6 +19,8 @@ import {
 import { WorldChart } from "./_components/world-chart"
 import { WorldStatsCards } from "./_components/world-stats-cards"
 
+export const revalidate = 86400 // Revalidate once per day (ISR)
+
 export const metadata: Metadata = {
   title: "World Population 2026 - Live Counter & Statistics",
   description:

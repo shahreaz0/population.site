@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Geist_Mono, Inter } from "next/font/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
@@ -15,6 +16,15 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: {
+    default: "Population.site — World Population Database 2026",
+    template: "%s | Population.site",
+  },
+  description:
+    "Search live population data, rankings, densities, and growth rates for 240+ countries. The world's real-time population search engine.",
+}
 
 export default function RootLayout({
   children,

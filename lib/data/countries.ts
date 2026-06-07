@@ -50,24 +50,8 @@ export async function loadCountries(): Promise<CountryData[]> {
     return cachedCountries
   }
 
-  // Map static countries to the CountryData schema
-  const data: CountryData[] = STATIC_COUNTRIES.map((sc) => ({
-    name: sc.name,
-    slug: sc.slug,
-    code2: sc.code2,
-    code3: sc.code3,
-    continent: sc.continent,
-    capital: sc.capital,
-    area: sc.area,
-    population2026: sc.population2026,
-    growthRate: sc.growthRate,
-    birthRate: sc.birthRate,
-    deathRate: sc.deathRate,
-    medianAge: sc.medianAge,
-    urbanPopulationPercent: sc.urbanPopulationPercent,
-    flag: sc.flag,
-    historical: sc.historical,
-  }))
+  // StaticCountry and CountryData share identical field shapes — spread directly
+  const data: CountryData[] = [...STATIC_COUNTRIES]
 
   data.sort((a, b) => b.population2026 - a.population2026)
   cachedCountries = data
@@ -254,13 +238,13 @@ export async function generateAISummary(country: CountryData): Promise<string> {
           ? "nearly flat/stagnant"
           : "contracting"
 
-  const _ageDescription =
+  const ageDescription =
     country.medianAge < 20
-      ? "exceptionally young demographic profile, indicating a high potential for future growth"
+      ? "exceptionally young demographic profile, indicating high potential for future growth"
       : country.medianAge < 30
-        ? "healthy, young population structure supporting economic growth"
+        ? "healthy, young population structure supporting economic expansion"
         : country.medianAge < 40
-          ? "mature age structure facing typical urban shifts"
+          ? "mature age structure facing typical urban demographic shifts"
           : "rapidly aging society with rising median age concerns"
 
   const pop1960Obj = country.historical.find((h) => h.year === 1960)
@@ -278,7 +262,7 @@ export async function generateAISummary(country: CountryData): Promise<string> {
       Spanning an area of <strong>${country.area.toLocaleString()} sq km</strong>, the country registers a population density of <strong>${density} people/sq km</strong>, categorized as <strong>${densityCategory}</strong>. Demographically, the nation exhibits a <strong>${growthDescription}</strong> trajectory, expanding at a growth rate of <strong>${country.growthRate}%</strong> per annum. This growth is sustained by a birth rate of <strong>${country.birthRate} per 1,000</strong> people and a death rate of <strong>${country.deathRate} per 1,000</strong>.
     </p>
     <p class="mb-4 text-foreground/80 leading-relaxed">
-      Historical data reveals a transformation since 1960, when the population was recorded at <strong>${pop1960.toLocaleString()}</strong>. Over these six decades, ${country.name} has experienced a <strong>${historicalIncrease}% increase</strong> in overall headcount. Currently, the society shows a median age of <strong>${country.medianAge} years</strong> and exhibits a <strong>${country.urbanPopulationPercent}% urbanization rate</strong>, meaning that a ${country.urbanPopulationPercent > 50 ? "majority" : "minority"} of residents dwell in major urban areas.
+      Historical data reveals a transformation since 1960, when the population was recorded at <strong>${pop1960.toLocaleString()}</strong>. Over these six decades, ${country.name} has experienced a <strong>${historicalIncrease}% increase</strong> in overall headcount. With a median age of <strong>${country.medianAge} years</strong>, the country reflects a <strong>${ageDescription}</strong>. Currently, a <strong>${country.urbanPopulationPercent}% urbanization rate</strong> means that a ${country.urbanPopulationPercent > 50 ? "majority" : "minority"} of residents dwell in major urban areas.
     </p>
   `.trim()
 }

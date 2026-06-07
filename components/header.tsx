@@ -148,17 +148,6 @@ export function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Search Icon */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={triggerGlobalSearch}
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
-            aria-label="Search countries"
-          >
-            <IconSearch className="h-4 w-4" />
-          </Button>
         </nav>
 
         {/* Action Buttons (Search, Theme, Mobile Toggle) */}
@@ -172,7 +161,7 @@ export function Header() {
           >
             <span className="flex items-center gap-1.5">
               <IconSearch className="h-3.5 w-3.5" />
-              Search countries...
+              Search...
             </span>
             <kbd className="pointer-events-none select-none rounded-none border bg-background px-1.5 font-medium font-mono text-[10px] opacity-100">
               ⌘K

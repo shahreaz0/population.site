@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 import WorldPage from "../world/page"
 
-export const revalidate = 86400 // Revalidate once per day (ISR)
-
 export const metadata: Metadata = {
   title: "World Population Clock 2026 — Live Tracker & Demographics",
   description:

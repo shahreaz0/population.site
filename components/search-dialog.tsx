@@ -10,19 +10,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { type CountryData, getAllCountries } from "@/lib/data/countries"
+import type { CountryData } from "@/lib/data/countries"
 
-export function SearchDialog() {
+export function SearchDialog({ countries }: { countries: CountryData[] }) {
   const [open, setOpen] = React.useState(false)
-  const [countries, setCountries] = React.useState<CountryData[]>([])
   const router = useRouter()
 
   React.useEffect(() => {
-    // Fetch countries client-side for searching
-    getAllCountries().then((data) => {
-      setCountries(data)
-    })
-
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()

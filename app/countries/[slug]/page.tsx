@@ -25,8 +25,6 @@ interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-export const revalidate = 86400 // Revalidate once per day (ISR)
-
 // Pre-render all country paths
 export async function generateStaticParams() {
   const countries = await getAllCountries()

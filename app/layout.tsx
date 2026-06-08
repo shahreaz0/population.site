@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { SearchDialog } from "@/components/search-dialog"
 import { ThemeProvider } from "@/components/theme-provider"
+import { getAllCountries } from "@/lib/data/countries"
 import { cn } from "@/lib/utils"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
@@ -26,11 +27,12 @@ export const metadata: Metadata = {
     "Search live population data, rankings, densities, and growth rates for 240+ countries. The world's real-time population search engine.",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const countries = await getAllCountries()
   return (
     <html
       lang="en"
@@ -49,7 +51,7 @@ export default function RootLayout({
               <Header />
               <main className="flex-1 pb-16 md:pb-0">{children}</main>
               <Footer />
-              <SearchDialog />
+              <SearchDialog countries={countries} />
               <BottomNav />
             </div>
           </NuqsAdapter>

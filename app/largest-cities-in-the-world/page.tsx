@@ -13,8 +13,6 @@ import {
 } from "@/components/ui/table"
 import { getLargestCities } from "@/lib/data/countries"
 
-export const revalidate = 86400 // Revalidate once per day (ISR)
-
 export const metadata: Metadata = {
   title: "Largest Cities in the World 2026 - Population Rankings",
   description:

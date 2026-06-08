@@ -31,8 +31,6 @@ interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-export const revalidate = 86400 // Revalidate once per day (ISR)
-
 // Generate static routes at build time
 export async function generateStaticParams() {
   const stats = await getContinentStats()

@@ -120,7 +120,7 @@ export function SEOLinksGrid() {
           const Icon = link.icon
           return (
             <Link key={link.href} href={link.href} className="group block">
-              <Card className="h-full border border-border/40 bg-card/50 transition-all duration-200 hover:border-primary/40 hover:shadow-sm group-hover:translate-y-[-1px]">
+              <Card className="h-full border border-border/40 bg-card/50 transition-all duration-200 hover:border-primary/40 hover:shadow-sm group-hover:-translate-y-px">
                 <CardHeader className="flex flex-row items-center gap-3 p-4 pb-2">
                   <div className={`shrink-0 rounded-none p-2 ${link.color}`}>
                     <Icon className="h-4 w-4" />

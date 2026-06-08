@@ -5,8 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getAllCountries } from "@/lib/data/countries"
 import { RankingsTable } from "../rankings/_components/rankings-table"
 
-export const revalidate = 86400 // Revalidate once per day (ISR)
-
 export const metadata: Metadata = {
   title: "Median Age by Country 2026 - Age Demographic Profiles",
   description:

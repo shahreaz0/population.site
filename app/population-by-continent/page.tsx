@@ -12,8 +12,6 @@ import { AdSenseBlock } from "@/components/adsense-block"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getContinentStats } from "@/lib/data/countries"
 
-export const revalidate = 86400 // Revalidate once per day (ISR)
-
 export const metadata: Metadata = {
   title: "Population by Continent 2026 - Regional Stats",
   description:
